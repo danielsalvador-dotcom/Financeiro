@@ -29,7 +29,7 @@
 html,body{height:100%;overflow:hidden;background:var(--bg)}
 body{font-family:var(--sans);color:var(--text);font-size:15px;line-height:1.5;overscroll-behavior:none}
 
-.page{display:none;position:fixed;top:var(--ctx-h);left:0;right:0;bottom:calc(var(--tab-h) + var(--safe-b));overflow-y:auto;-webkit-overflow-scrolling:touch}
+.page{display:none;position:fixed;top:calc(var(--ctx-h) + env(safe-area-inset-top));left:0;right:0;bottom:calc(var(--tab-h) + var(--safe-b));overflow-y:auto;-webkit-overflow-scrolling:touch}
 .page.active{display:block}
 .pi{padding:0 16px 40px}
 
@@ -126,8 +126,8 @@ body{font-family:var(--sans);color:var(--text);font-size:15px;line-height:1.5;ov
 .reg-box.focus{border-color:var(--acc)}
 .reg-inp{width:100%;background:transparent;border:none;outline:none;font-family:var(--sans);font-size:16px;color:var(--text);resize:none;line-height:1.4;min-height:48px;max-height:100px}
 .reg-inp::placeholder{color:var(--text3)}
-.reg-row{display:flex;align-items:center;gap:8px;margin-top:12px;flex-wrap:wrap}
-.reg-tag{padding:5px 11px;border-radius:20px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s}
+.reg-row{display:flex;align-items:center;gap:6px;margin-top:12px;flex-wrap:nowrap;overflow-x:auto}
+.reg-tag{padding:5px 9px;border-radius:20px;font-size:11px;border:1px solid var(--border2);background:var(--bg2);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--sans);white-space:nowrap;transition:all .15s}
 .reg-tag.sel{border-color:var(--acc);background:var(--acc-bg);color:var(--acc2)}
 .reg-send{margin-left:auto;width:40px;height:40px;border-radius:50%;border:none;background:var(--acc);color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s}
 .reg-send:disabled{opacity:.3}
@@ -204,10 +204,10 @@ body{font-family:var(--sans);color:var(--text);font-size:15px;line-height:1.5;ov
     <textarea class="reg-inp" id="reg-inp" placeholder="45 almoço · uber 32 pix · gastei 120 mercado ontem · 50 farmácia débito Nubank..." rows="2" oninput="onRegInp(this)" onkeydown="regKey(event)"></textarea>
     <div class="reg-preview" id="reg-preview"></div>
     <div class="reg-row">
-      <button class="reg-tag sel" id="pay-credito" onclick="selPay('credito')">💳 Crédito</button>
-      <button class="reg-tag" id="pay-debito" onclick="selPay('debito')">🏧 Débito</button>
+      <button class="reg-tag sel" id="pay-credito" onclick="selPay('credito')">💳 Créd.</button>
+      <button class="reg-tag" id="pay-debito" onclick="selPay('debito')">🏧 Déb.</button>
       <button class="reg-tag" id="pay-pix" onclick="selPay('pix')">⚡ Pix</button>
-      <button class="reg-tag" id="pay-dinheiro" onclick="selPay('dinheiro')">💵 Dinheiro</button>
+      <button class="reg-tag" id="pay-dinheiro" onclick="selPay('dinheiro')">💵 Din.</button>
       <button class="reg-send" id="reg-send" onclick="doReg()" disabled>
         <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
       </button>
@@ -817,7 +817,7 @@ function renderQuickBtns(){
 function renderDash(){
   const trip=getTrip();const txs=ctxTXS();const m=startMonth();const now=new Date();
   const h=now.getHours();const g=h<12?'Bom dia':h<18?'Boa tarde':'Boa noite';
-  const dt=document.getElementById('dash-title');if(dt)dt.textContent=trip?`${trip.emoji} ${trip.name}`:`${g} 👋`;
+  const dt=document.getElementById('dash-title');if(dt)dt.textContent=trip?`${trip.emoji} ${trip.name}`:`${g}, Daniel 👋`;
   const ds=document.getElementById('dash-sub');if(ds)ds.textContent=trip?`${fmtD(trip.start)} → ${fmtD(trip.end)}`:now.toLocaleDateString('pt-BR',{weekday:'long',day:'numeric',month:'long'});
 
   // Score
