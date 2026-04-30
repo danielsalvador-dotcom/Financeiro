@@ -204,7 +204,7 @@ body{font-family:var(--sans);color:var(--text);font-size:15px;line-height:1.5;ov
     <textarea class="reg-inp" id="reg-inp" placeholder="45 almoço · uber 32 pix · gastei 120 mercado ontem · 50 farmácia débito Nubank..." rows="2" oninput="onRegInp(this)" onkeydown="regKey(event)"></textarea>
     <div class="reg-preview" id="reg-preview"></div>
     <div class="reg-row">
-      <button class="reg-tag sel" id="pay-outros" onclick="selPay('outros')">💳 Crédito</button>
+      <button class="reg-tag sel" id="pay-credito" onclick="selPay('credito')">💳 Crédito</button>
       <button class="reg-tag" id="pay-debito" onclick="selPay('debito')">🏧 Débito</button>
       <button class="reg-tag" id="pay-pix" onclick="selPay('pix')">⚡ Pix</button>
       <button class="reg-tag" id="pay-dinheiro" onclick="selPay('dinheiro')">💵 Dinheiro</button>
@@ -219,9 +219,9 @@ body{font-family:var(--sans);color:var(--text);font-size:15px;line-height:1.5;ov
 
   <!-- PERÍODO -->
   <div class="period-tabs">
-    <button class="ptab active" onclick="setPer('hoje',this)">Hoje</button>
+    <button class="ptab" onclick="setPer('hoje',this)">Hoje</button>
     <button class="ptab" onclick="setPer('semana',this)">Semana</button>
-    <button class="ptab" onclick="setPer('mes',this)">Mês</button>
+    <button class="ptab active" onclick="setPer('mes',this)">Mês</button>
     <button class="ptab" onclick="setPer('ano',this)">Ano</button>
     <button class="ptab" onclick="setPer('total',this)">Total</button>
   </div>
@@ -530,8 +530,8 @@ const saveCHIPS=()=>sv('fin_chips',CHIPS);
 // ══════════════════════════════════════════════
 // STATE
 // ══════════════════════════════════════════════
-let CTX='normal',dashPer='hoje',histPer='todos',analPer='mes';
-let selPayment='outros',recTipo='salario',selEmoji='✈️',editCatId=null;
+let CTX='normal',dashPer='mes',histPer='todos',analPer='mes';
+let selPayment='credito',recTipo='salario',selEmoji='✈️',editCatId=null;
 
 // ══════════════════════════════════════════════
 // UTILS
@@ -556,6 +556,7 @@ function filterPer(arr,per){
 
 function parseDate(txt){
   const t=txt.toLowerCase();
+  if(t.includes('hoje')) return today();
   if(t.includes('ontem')){const d=new Date();d.setDate(d.getDate()-1);return d.toISOString().slice(0,10)}
   const days={segunda:1,terça:2,terca:2,quarta:3,quinta:4,sexta:5,sábado:6,sabado:6,domingo:0};
   for(const[n,dow] of Object.entries(days)){
@@ -655,7 +656,8 @@ function doReg(){
 function selPay(pay){
   selPayment=pay;
   document.querySelectorAll('.reg-tag').forEach(b=>b.classList.remove('sel'));
-  document.getElementById('pay-'+pay).classList.add('sel');
+  const el=document.getElementById('pay-'+pay);
+  if(el) el.classList.add('sel');
 }
 
 function showFeedback(msg){
@@ -1075,7 +1077,7 @@ function renderCfg(){
   if(chel)chel.innerHTML=CHIPS.map((c,i)=>`<div class="cat-row"><div style="flex:1;font-size:13px">${c}</div><div class="tx-del" onclick="delChip(${i})">✕</div></div>`).join('');
   // Cat selects
   const opts=CATS.map(c=>`<option value="${c.id}">${c.icon} ${c.label}</option>`).join('');
-  ['fixa-cat-sel'].forEach(id=>{const el=document.getElementById(id);if(el)el.innerHTML=opts});
+  const fcs=document.getElementById('fixa-cat-sel');if(fcs)fcs.innerHTML=opts;
 }
 
 // ══════════════════════════════════════════════
@@ -1103,7 +1105,7 @@ function exportXLSX(){
     XLSX.writeFile(wb,`fin_DA_${today()}.xlsx`);
   };document.head.appendChild(s);
 }
-function clearAll(){if(!confirm('⚠️ Apagar TODOS os dados?'))return;TXS=[];TRIPS=[];RECS=[];FIXAS=[];GOALS=[];CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));CHIPS=['☕ café 8','🍽️ almoço 45','🚗 uber 32 pix','🛒 mercado 120','💊 farmácia 35'];['fin_txs','fin_trips','fin_recs','fin_fixas','fin_goals','fin_cats','fin_chips'].forEach(k=>localStorage.removeItem(k));CTX='normal';renderCtxBar();renderAll()}
+function clearAll(){if(!confirm('⚠️ Apagar TODOS os dados?'))return;TXS=[];TRIPS=[];RECS=[];FIXAS=[];GOALS=[];CATS=JSON.parse(JSON.stringify(DEFAULT_CATS));CHIPS=['☕ café 8','🍽️ almoço 45','🚗 uber 32 pix','🛒 mercado 120','💊 farmácia 35'];['fin_txs','fin_trips','fin_recs','fin_fixas','fin_goals','fin_cats','fin_chips'].forEach(k=>localStorage.removeItem(k));CTX='normal';location.reload()}
 
 // ══════════════════════════════════════════════
 // NAVIGATION / MODAL
